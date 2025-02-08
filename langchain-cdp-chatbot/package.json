@@ -5,7 +5,7 @@
   "author": "Coinbase Inc.",
   "license": "Apache-2.0",
   "scripts": {
-    "start": "NODE_OPTIONS='--no-warnings' ts-node ./chatbot.ts",
+    "start": "NODE_OPTIONS='--no-warnings' ts-node ./server.ts",
     "dev": "nodemon ./server.ts",
     "lint": "eslint -c .eslintrc.json *.ts",
     "lint-fix": "eslint -c .eslintrc.json *.ts --fix",
