@@ -179,7 +179,7 @@ app.post("/chat/pool", async (req : any, res : any) => {
 let agent: any;
 let config: any;
 
-async function initializeCdpAgent() {
+(async function initializeCdpAgent() {
   try {
     const result = await initializeAgent();
     agent = result.agent;
@@ -189,12 +189,11 @@ async function initializeCdpAgent() {
     console.error('Failed to initialize agent:', error);
     process.exit(1);
   }
-};
+})();
 
 app.post('/chat/wallet', async (req, res) => {
   try {
     const { message } = req.body;
-    await initializeCdpAgent();
     let finalResponse = '';
 
     const stream = await agent.stream(
