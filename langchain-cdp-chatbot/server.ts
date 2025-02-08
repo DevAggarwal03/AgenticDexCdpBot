@@ -57,8 +57,6 @@ async function allowLpContractToSpendTokens(amount: string) {
     await tx1.wait();
     const tx2 = await mirTokenContract.approve(lpContractAddress, ethers.parseEther(amount!));
     await tx2.wait();
-    console.log(tx1.hash);
-    console.log(tx2.hash);
     return `CLK token transaction hash : ${tx1.hash} and MIR token transaction hash : ${tx2.hash}`
   }catch(e){
     console.log("unable to update price : " ,e);
@@ -67,7 +65,6 @@ async function allowLpContractToSpendTokens(amount: string) {
 
 async function swapMir(amount: string) {
     try {
-        console.log("amount : ",amount);
         const tx = await walletProvider.sendTransaction({
             to: lpContractAddress as `0x${string}`,
             data: encodeFunctionData({
@@ -76,18 +73,15 @@ async function swapMir(amount: string) {
                 args: [ethers.parseUnits(amount.toString(), 'ether')],
             }),
         });
-        console.log(tx);
         return `Swap transaction hash : ${tx}`
         
     } catch (error) {
-        console.log(error);
         return `unable to swap tokens error: ${error}`
     }   
 }
 
 async function swapClk(amount: string) {
 try {
-    console.log("amount : ",amount);
     const tx = await walletProvider.sendTransaction({
         to: lpContractAddress as `0x${string}`,
         data: encodeFunctionData({
@@ -96,18 +90,15 @@ try {
             args: [ethers.parseUnits(amount.toString(), 'ether')],
         }),
     });
-    console.log(tx);
     return `Swap transaction hash : ${tx}`
     
 } catch (error) {
-    console.log(error);
     return `unable to swap tokens error: ${error}`
 }   
 }
 
 async function provideLiquidity(amount: string) {
   try {
-    console.log("amount : ",amount);
     const tx = await walletProvider.sendTransaction({
       to: lpContractAddress as `0x${string}`,
       data: encodeFunctionData({
@@ -116,17 +107,14 @@ async function provideLiquidity(amount: string) {
         args: [ethers.parseUnits(amount.toString(), 'ether'), ethers.parseUnits(amount.toString(), 'ether')],
       }),
     });
-    console.log(tx);
     return `Add liquidity transaction hash : ${tx}`
   } catch (error) {
-    console.log(error);
     return `unable to add liquidity error: ${error}`
   }
 }
 
 async function removeLiquidity(amount: string) {
   try {
-    console.log("amount : ",amount);
     const tx = await walletProvider.sendTransaction({
       to: lpContractAddress as `0x${string}`,
       data: encodeFunctionData({
@@ -135,10 +123,8 @@ async function removeLiquidity(amount: string) {
         args: [ethers.parseUnits(amount.toString(), 'ether')],
       }),
     });
-    console.log(tx);
     return `Remove liquidity transaction hash : ${tx}`  
   } catch (error) {
-    console.log(error);
     return `unable to remove liquidity error: ${error}`
   }
 }
@@ -146,7 +132,6 @@ async function removeLiquidity(amount: string) {
 
 app.post("/chat/pool", async (req : any, res : any) => {
   const { message } = req.body;
-  console.log(message);
   try {
     const intent = await hf.request({
       model: "facebook/bart-large-mnli",
@@ -158,8 +143,6 @@ app.post("/chat/pool", async (req : any, res : any) => {
 
     //@ts-ignore
     const queryType = intent.labels[0];
-    console.log(intent)
-    console.log("Query type:", queryType);
     switch (queryType) {
       case "allow":
         const response = await allowLpContractToSpendTokens("2");
@@ -189,7 +172,6 @@ app.post("/chat/pool", async (req : any, res : any) => {
         return res.status(400).json({ error: "Unknown query type" });
     }
   } catch (error : any) {
-    console.error("Error processing query:", error.message);
     res.status(500).json({ error: `Internal Server Error: ${error.message}` });
   }
 });
@@ -224,11 +206,11 @@ app.post('/chat/wallet', async (req, res) => {
     for await (const chunk of stream) {
       if ('agent' in chunk) {
         finalResponse += chunk.agent.messages[0].content;
-        console.log(finalResponse);
-      } else if ('tools' in chunk) {
-        // finalResponse += chunk.tools.messages[0].content;
-        console.log(finalResponse);
-      }
+      } 
+      // else if ('tools' in chunk) {
+      //   finalResponse += chunk.tools.messages[0].content;
+      //   console.log(finalResponse);
+      // }
     }
 
     // Send only the final response
